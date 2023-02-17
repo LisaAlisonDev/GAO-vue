@@ -1,35 +1,40 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+
 </script>
 
-<template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
+<template> 
+ <header>
+        <div class="title">
+            <h3>
+                Gestion d'attribution de poste
+            </h3>
+        </div>
+    </header> 
   <RouterView />
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
+  display: flex;
+  border: 2px solid #000000;
+  line-height: 25px;
   max-height: 100vh;
+  background-color: white;
+  margin-top: 10px;
+  width: 100%;
+}
+.title {
+  line-height: 30px;
+    font-family: Monospace;
+    font-size: 1.2rem;
+    margin: -20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    margin-top: 15px;
+    margin-left: 15px;
+    text-transform: lowercase;
+    width: 100%;
 }
 
 .logo {
@@ -64,7 +69,6 @@ nav a:first-of-type {
 
 @media (min-width: 1024px) {
   header {
-    display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
   }
@@ -74,7 +78,6 @@ nav a:first-of-type {
   }
 
   header .wrapper {
-    display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
   }
