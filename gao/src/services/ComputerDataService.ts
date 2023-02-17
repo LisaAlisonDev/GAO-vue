@@ -1,5 +1,4 @@
 import apiClient from "@/http-common";
-import http from "@/http-common";
 
 class ComputerDataService {
    getAll(): Promise<any> {
@@ -8,19 +7,19 @@ class ComputerDataService {
   }
 
   get(id: any): Promise<any> {
-    return http.get(`/computers/${id}`);
+    return apiClient.get(`/computers/${id}`);
   }
 
   create(data: any): Promise<any> {
-    return http.post("/computers", data);
+    return apiClient.post("/computers", data);
   }
 
   update(id: any, data: any): Promise<any> {
-    return http.put(`/computers/${id}`, data);
+    return apiClient.put(`/computers/${id}`, data);
   }
 
   delete(id: any): Promise<any> {
-    return http.delete(`/computers/${id}`);
+    return apiClient.delete(`/computers/${id}`);
   }
 }
 
