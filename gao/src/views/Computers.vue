@@ -3,16 +3,22 @@ import ComputerBox from "../components/ComputerBox.vue";
 import ComputerDataService from "@/services/ComputerDataService";
 import type Computer from "@/types/ComputerType";
 import type ResponseData from "@/types/ResponseDataTypes";
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiPlus } from '@mdi/js'
 
 export default {
     // Properties returned from data() become reactive state
     // and will be exposed on `this`.
     data() {
         return {
+            path: mdiPlus,
+            dialog: false,
             computerList: [] as Computer[]
         }
     },
-
+    components: {
+		SvgIcon
+	},
     // Methods are functions that mutate state and trigger updates.
     // They can be bound as event listeners in templates.
     methods: {
@@ -25,9 +31,12 @@ export default {
                 .catch((e: Error) => {
                     console.log(e);
                 });
+        },
+        refreshComputerList(value : Computer){
+            this.computerList.pop()
+            this.computerList.unshift(value)
         }
     },
-
     // Lifecycle hooks are called at different stages
     // of a component's lifecycle.
     // This function will be called when the component is mounted.
@@ -39,9 +48,7 @@ export default {
 
 <template>
     <main>
-        <div>
-            <a href="" class="add-computer-btn">Ajouter poste</a>
-        </div>
+        <AddComputer @computer="refreshComputerList"/> 
         <div class="computers_box">
             <div v-for="(item, index) in computerList" :key="index" class="computer_box">
                 <ComputerBox :computer=item! />
@@ -62,19 +69,25 @@ h3 {
 }
 .add-computer-btn{
     background: #adbab6;
-    color: #fafdfc;
     border: 1px solid #000000;
     border-radius: 5px;
-    display: inline-block;
+    display: inline-flex;
     margin: 5px;
-    padding: 10px;
     width: 200px;
+    height: 50px;
     float: right;
+    line-height: 50px;
+    text-align: center;
+}
+.add-computer-txt, .icon {
+    color: #fafdfc;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+
 }
 div.add-computer-btn {
     display: inline-block;
-    justify-self: end;
-    justify-items: end;
 }
 .computers_box {
     display: inline-flex;
