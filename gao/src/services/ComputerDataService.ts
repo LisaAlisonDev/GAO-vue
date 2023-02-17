@@ -1,9 +1,9 @@
 import apiClient from "@/http-common";
 
 class ComputerDataService {
-   getAll(): Promise<any> {
+   getAll(pagination : number): Promise<any> {
     console.log("hey")
-    return apiClient.get("/computers");
+    return apiClient.get(`/computers/?page=${pagination}`);
   }
 
   get(id: any): Promise<any> {
