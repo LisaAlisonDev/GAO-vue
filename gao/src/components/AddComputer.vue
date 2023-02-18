@@ -1,13 +1,9 @@
 <script lang="ts">
-import ComputerBox from "../components/ComputerBox.vue";
 import ComputerDataService from "@/services/ComputerDataService";
 import type Computer from "@/types/ComputerType";
 import type ResponseData from "@/types/ResponseDataTypes";
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiPlus } from '@mdi/js'
-import useVuelidate from '@vuelidate/core'
-import { required, minLength } from '@vuelidate/validators'
-
 
 export default {
 
@@ -27,10 +23,32 @@ export default {
     components: {
         SvgIcon
     },
-
     // Methods are functions that mutate state and trigger updates.
     // They can be bound as event listeners in templates.
     methods: {
+        createComputer() {
+            if (this.nameValidation()) {
+                ComputerDataService.create({ name: this.name })
+                    .then(async (response: ResponseData) => {
+                        if (response.data.status != 201) {
+                            this.showSnackBar("Une erreur est survenue.")
+                        }
+                        this.computer = response.data.data;
+                        this.showSnackBar(response.data.message)
+                        await this.setUpdate()
+                    })
+                    .catch((e: Error) => {
+                        this.showSnackBar("Une erreur est survenue.")
+                        console.log(e);
+                    });
+            }
+        },
+        async setUpdate() {
+            await this.$nextTick(); // wait until a new text-field will be rendered
+            await this.refreshComputerData(this.computer)
+            this.dialog = false;
+            this.name = ""
+        },
         nameValidation() {
             if (this.name == "") {
                 this.valid = false
@@ -38,32 +56,13 @@ export default {
             }
             return true;
         },
-        async addNotification() {
+        async showSnackBar(message: string) {
+            this.message = message;
             this.snackbar = true;
         },
         async refreshComputerData(computer: Computer) {
-            this.$emit('computer', computer);
+            this.$emit('addedComputerEvent', computer);
         },
-        async createComputer() {
-            if (this.nameValidation()) {
-                await ComputerDataService.create({ name: this.name })
-                    .then((response: ResponseData) => {
-                        this.computer = response.data.data;
-                        this.message = response.data.message
-                    })
-                    .catch((e: Error) => {
-                        console.log(e);
-                    });
-            }
-        },
-        async setComputer() {
-            await this.$nextTick(); // wait until a new text-field will be rendered
-            await this.createComputer();
-            this.addNotification();
-            this.refreshComputerData(this.computer)
-            this.dialog = false;
-            this.name = ""
-        }
     },
 }
 </script>
@@ -85,7 +84,7 @@ export default {
                         <v-text-field v-model="name" label="Nom du poste"
                             :rules="[v => !!v || 'Veuillez entrer un nom de poste.']"></v-text-field>
                         <span v-if="valid != true" class="error-text">Veuillez entrer un nom de poste. </span>
-                        <v-btn color="#385a50" class="add-computer" block @click="setComputer()">Confirmer</v-btn>
+                        <v-btn color="#385a50" class="add-computer" block @click="createComputer()">Confirmer</v-btn>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>

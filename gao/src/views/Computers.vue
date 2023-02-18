@@ -29,18 +29,19 @@ export default {
         retrieveComputers(page: number) {
             ComputerDataService.getAll(page)
                 .then((response: ResponseData) => {
-                    this.computerList = response.data.data.data;
-                    this.maxPage = response.data.data.last_page
-                    this.total = response.data.data.total
-                    this.currentPage = page
-                    console.log(response.data.data.data);
+                    if (response.data.status == 200) {
+                        this.computerList = response.data.data.data;
+                        this.setPaginationInfoFromApi(page, response.data.data)
+                    }
                 })
                 .catch((e: Error) => {
                     console.log(e);
                 });
         },
-        refreshComputerList(value: Computer) {
-            this.retrieveComputers(this.currentPage)
+        setPaginationInfoFromApi(page: number, data: ResponseData) {
+            this.maxPage = data.last_page
+            this.total = data.total
+            this.currentPage = page
         },
         changeToNextPage() {
             this.currentPage++
@@ -53,7 +54,10 @@ export default {
             if (this.currentPage < this.maxPage) {
                 this.retrieveComputers(this.currentPage)
             }
-        }
+        },
+        refreshComputerList() {
+            this.retrieveComputers(this.currentPage)
+        },
     },
     // Lifecycle hooks are called at different stages
     // of a component's lifecycle.
@@ -73,11 +77,10 @@ export default {
             </v-btn>
             <v-btn @click="changeToNextPage()" v-if="currentPage !== maxPage" class="pagination_number">Suivant</v-btn>
         </div>
-        
-        <AddComputer @computer="refreshComputerList" />
+        <AddComputer @addedComputerEvent="refreshComputerList" />
         <div class="computers_box">
             <div v-for="(item, index) in computerList" :key="index" class="computer_box">
-                <ComputerBox :computer=item! />
+                <ComputerBox :computer=item! @refreshEvent="refreshComputerList"  />
             </div>
         </div>
     </main>
@@ -156,4 +159,5 @@ div.add-computer-btn {
     margin-inline: 10px;
 }
 
-@media (min-width: 1024px) {}</style>
+@media (min-width: 1024px) {}
+</style>
